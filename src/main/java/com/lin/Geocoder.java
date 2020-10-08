@@ -25,7 +25,6 @@ public class Geocoder {
 			stream.forEach(line->result.add(processLine(line, abbrMgr)));
 			
 	        // output
-	        System.out.println("=== RESULT ===");
 	        result.forEach(s -> System.out.println(s));
 		} catch (IOException e) {
 			System.out.println("Error: file %s not found");
