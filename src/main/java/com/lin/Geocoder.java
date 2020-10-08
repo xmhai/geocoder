@@ -10,8 +10,6 @@ import java.util.stream.Stream;
 
 public class Geocoder {
 	public static void main(String[] args) {
-		System.out.println("Geocoder is running...");
-		
 		// get input file name
 		if (args == null || args.length!=1) {
 			System.out.println("Usage: # ./run.sh < {path_to_input_file}.csv");
