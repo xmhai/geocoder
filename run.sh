@@ -1,5 +1,5 @@
 if [ "$#" -ne 1 ]; then
-   echo "Usage: # ./run.sh < {path_to_input_file}.csv"
+   echo "Usage: ./run.sh {path_to_input_file}.csv"
    exit 1
 fi
 
