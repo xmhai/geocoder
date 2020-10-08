@@ -27,7 +27,7 @@ public class Geocoder {
 	        // output
 	        result.forEach(s -> System.out.println(s));
 		} catch (IOException e) {
-			System.out.println("Error: file %s not found");
+			System.out.println("Error: file "+fileName+" not found");
 		}
 	}
 	
