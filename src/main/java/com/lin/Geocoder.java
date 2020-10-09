@@ -9,29 +9,29 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class Geocoder {
-	public static void main(String[] args) {
-		// get input file name
-		if (args == null || args.length!=1) {
-			System.out.println("Usage: # ./run.sh < {path_to_input_file}.csv");
-			return;
-		}
-		
-        // parse the input file
-		String fileName = args[0];
-        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
-            List<String> result = new ArrayList<String>();
-    		AbbreviationManager abbrMgr = new AbbreviationManager();
-        	
-			stream.forEach(line->result.add(processLine(line, abbrMgr)));
+	private Abbreviation abbr;
+	private AbbreviationFinder abbrFinder;
+	private AbbreviationExpander abbrExpander;
+
+	public Geocoder() {
+		this.abbr = new Abbreviation();
+		this.abbrFinder = new AbbreviationFinder();
+		this.abbrExpander = new AbbreviationExpander(this.abbr);
+	}
+	
+	public void processCsv(String filename) {
+        List<String> result = new ArrayList<String>();
+        try (Stream<String> stream = Files.lines(Paths.get(filename))) {
+			stream.forEach(line->result.add(processLine(line)));
 			
 	        // output
 	        result.forEach(s -> System.out.println(s));
 		} catch (IOException e) {
-			System.out.println("Error: file "+fileName+" not found");
+			System.out.println("Error: file " + filename + " not found");
 		}
 	}
-	
-	static String processLine(String line, AbbreviationManager abbrMgr) {
+
+	private String processLine(String line) {
 		if (line == null || line.isBlank() || line.startsWith("\"Abbreviated")) {
 			return line;
 		}
@@ -50,12 +50,12 @@ public class Geocoder {
 		
 		if (expandedText == null || expandedText.isBlank()) {
 			// line to expand
-			return "\"" + abbrText + "\",\"" + abbrMgr.expand(abbrText) + "\"";
+			return "\"" + abbrText + "\",\"" + abbrExpander.expand(abbrText) + "\"";
 		} else {
 			// line to find abbreviations
 			try {
-				Map<String, String> abbrs = AbbreviationFinder.find(abbrText, expandedText);
-				if (!abbrMgr.add(abbrs)) {
+				Map<String, String> map = abbrFinder.find(abbrText, expandedText);
+				if (!abbr.add(map)) {
 		        	return String.format("%s => ERROR - duplicate abbreviation found, entry: ", line);
 				}
 			} catch (Exception e) {
@@ -63,5 +63,16 @@ public class Geocoder {
 			}
 	        return line;
 		}
+	}
+	
+	public static void main(String[] args) {
+		// get input file name
+		if (args == null || args.length!=1) {
+			System.out.println("ERROR: Missing filename argument");
+			return;
+		}
+		
+        // parse the input file
+		new Geocoder().processCsv(args[0]);
 	}
 }

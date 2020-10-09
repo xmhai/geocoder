@@ -13,6 +13,10 @@ public class AbbreviationUtils {
 		return s.replaceAll("\"$", "").replaceAll("^\"", "");
 	}
 
+	public static String formatAddress(final String str) {
+		return capitalize(str);
+	}
+	
 	// copy from Apache WordUtils
     public static String capitalize(final String str) {
         if (str == null || str.isBlank()) {
